@@ -1,0 +1,33 @@
+.bg-color {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #2f363e;
+    box-shadow: 25px 25px 75px rgba(0, 0, 0, 0.75),
+        inset 10px 10px 70px rgba(0, 0, 0, 0.25),
+        inset 5px 5px 10px rgba(0, 0, 0, 0.5),
+        inset 5px 5px 20px rgba(0, 0, 0, 0.2),
+        inset -5px -5px 15px rgba(0, 0, 0, 0.75);
+
+}
+
+.heading {
+    font-size: 22px;
+    color: white;
+
+}
+
+.connect-btn {
+    background-color: #0c9090;
+    padding: 8px 28px;
+    color: white;
+    font-size: 16px;
+}
+
+.connect-btn:hover {
+    background-color: #188181;
+    padding: 8px 28px;
+    color: white;
+    font-size: 16px;
+}
