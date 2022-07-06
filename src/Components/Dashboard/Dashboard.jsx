@@ -36,7 +36,7 @@ export default function Dashboard() {
             sendUserData1(UserMap);
             sendUserData2(UserMap2);
             setfName(UserMap.FullName);
-            console.log(fName);
+
             setDoB(UserMap.DoB);
             setEmail(UserMap.EmailAddress);
             setUseraddress(UserMap.useraddress);
@@ -46,7 +46,7 @@ export default function Dashboard() {
             setReligion(UserMap2.religion);
             setIdFront(UserMap.IdFront);
             setIdBack(UserMap2.IdBack);
-            // console.log(UserMap2.IdBack);
+
         } catch (error) {
             console.log("error block", error);
         }
@@ -129,7 +129,7 @@ export default function Dashboard() {
                                                     </td>
                                                 </tr>
                                                 <button
-                                                    class="button-os pl-5  "
+                                                    class="button-os pl-5"
                                                     onClick={() => handleUpdate()}
                                                     id="foot"
                                                 >

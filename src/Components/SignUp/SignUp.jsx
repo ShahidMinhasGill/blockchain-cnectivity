@@ -22,13 +22,16 @@ export default function SignUp() {
     function onChangeValue(event) {
         setGender(event.target.value);
     }
+    const [file, setFile] = useState(``)
+    const [file2, setFile2] = useState(``)
+
     function onChange(e) {
-        console.log(e.target.files);
+        setFile(e.target.files[0])
         setIdFront(URL.createObjectURL(e.target.files[0]));
     }
     function onChange2(e) {
-        console.log(e.target.files);
         setIdBack(URL.createObjectURL(e.target.files[0]));
+        setFile2(e.target.files[0])
     }
     // async function onChange2(e) {
     //     const file = e.target.files[0]
@@ -56,30 +59,38 @@ export default function SignUp() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const added = await client.add(idBack)
-            const url = `https://ipfs.infura.io/ipfs/${added.path}`
-            console.log(url);
-            setIdBack(url)
-        } catch (error) {
-            console.log('Error uploading file: ', error)
-        }
+        // try {
+        //     const added = await client.add(idBack)
+        //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        //     console.log(url);
+        //     setIdBack(url)
+        // } catch (error) {
+        //     console.log('Error uploading file: ', error)
+        // }
 
-        try {
-            const added = await client.add(idFront)
-            const url = `https://ipfs.infura.io/ipfs/${added.path}`
-            console.log(url);
-            setIdFront(url)
-        } catch (error) {
-            console.log('Error uploading file: ', error)
-        }
+        // try {
+        //     const added = await client.add(idFront)
+        //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        //     console.log(url);
+        //     setIdFront(url)
+        // } catch (error) {
+        //     console.log('Error uploading file: ', error)
+        // }
         let acc = await loadWeb3()
         console.log('function in');
         let web3 = window.web3;
         let contractOf = new web3.eth.Contract(cotractAbi, contractAddress);
         try {
+
+            const added = await client.add(file);
+            const frontPicUrl = `https://ipfs.infura.io/ipfs/${added.path}`
+            setIdFront(frontPicUrl)
+            const added2 = await client.add(file2);
+            const backPicUrl = `https://ipfs.infura.io/ipfs/${added2.path}`
+            setIdBack(backPicUrl)
+
             let AddUser = await contractOf.methods.AddUser(fName, Dob, email, useraddress, city,
-                zip, gender, religion, idFront, idBack).send(
+                zip, gender, religion, frontPicUrl, backPicUrl).send(
                     { from: acc, }
                 )
             console.log(AddUser);
