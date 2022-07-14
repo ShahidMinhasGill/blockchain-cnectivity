@@ -15,22 +15,9 @@ export default function UpdateModal({ modalShow, setModalShow, getDate, userData
     const [zip, setZip] = useState('');
     const [gender, setGender] = useState("Male");
     const [religion, setReligion] = useState('');
-    const [idFront, setIdFront] = useState(``)
-    const [idBack, setIdBack] = useState(``)
-
-    // const updatedData = () => {
-    //     setFullName(userData1.FullName);
-    //     setDateOfBrith(userData1.DoB);
-    //     setUserEmail(userData1.email);
-    //     setAddress(userData1.useraddress);
-    //     console.log(fullName);
-    //     console.log(dateOfBrith);
-    //     console.log(userEmail);
-    //     console.log(address);
-    // }
-
+    const [idFront, setIdFront] = useState('')
+    const [idBack, setIdBack] = useState('')
     const updatedData = async () => {
-        console.log('show popup ');
         let acc = await loadWeb3()
         let web3 = window.web3;
         let contractOf = new web3.eth.Contract(cotractAbi, contractAddress);
@@ -39,17 +26,14 @@ export default function UpdateModal({ modalShow, setModalShow, getDate, userData
             let UserMap2 = await contractOf.methods._UserMap(acc).call()
             setFullName(UserMap.FullName)
             setDateOfBrith(UserMap.DoB)
-
             setUserEmail(UserMap.EmailAddress)
             setAddress(UserMap.useraddress)
             setCity(UserMap2.city)
-            console.log(UserMap2.city);
             setZip(UserMap2.zip)
             setGender(UserMap2.gender)
             setReligion(UserMap2.religion)
             setIdFront(UserMap.IdFront)
             setIdBack(UserMap2.IdBack)
-            console.log(UserMap2.IdBack);
 
         } catch (error) {
             console.log("error block", error);
@@ -61,40 +45,70 @@ export default function UpdateModal({ modalShow, setModalShow, getDate, userData
     }
     const [file, setFile] = useState(``)
     const [file2, setFile2] = useState(``)
+    const [pic1, setpic1] = useState(false)
+    const [pic2, setpic2] = useState(false)
 
     function onChange(e) {
+        setpic1(true)
         setFile(e.target.files[0])
         setIdFront(URL.createObjectURL(e.target.files[0]));
     }
     function onChange2(e) {
+        setpic2(true)
         setIdBack(URL.createObjectURL(e.target.files[0]));
         setFile2(e.target.files[0])
     }
     const updateUsers = async () => {
-        // setIdFront(showFile);
-        // try {
-        //     const added = await client.add(idBack)
-        //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-        //     console.log(url);
-        //     setIdBack(url)
-        // } catch (error) {
-        //     console.log('Error uploading file: ', error)
-        // }
-        let acc = await loadWeb3()
 
+
+        let acc = await loadWeb3()
         try {
-            const added = await client.add(file);
-            const frontPicUrl = `https://ipfs.infura.io/ipfs/${added.path}`
-            setIdFront(frontPicUrl)
-            const added2 = await client.add(file2);
-            const backPicUrl = `https://ipfs.infura.io/ipfs/${added2.path}`
-            setIdBack(backPicUrl)
             let web3 = window.web3;
             let contractOf = new web3.eth.Contract(cotractAbi, contractAddress)
-            await contractOf.methods.UpdateUserInfo(fullName, zip, dateOfBrith, userEmail, address, city,
-                gender, religion, frontPicUrl, backPicUrl).send(
-                    { from: acc, }
-                )
+            if (pic1 == true && pic2 == false) {
+                const added = await client.add(file);
+                const frontPicUrl = `https://ipfs.infura.io/ipfs/${added.path}`
+                setIdFront(frontPicUrl);
+                let backPick = userData2.IdBack;
+                setIdBack(backPick);
+                await contractOf.methods.UpdateUserInfo(fullName, zip, dateOfBrith, userEmail, address, city,
+                    gender, religion, frontPicUrl, backPick).send(
+                        { from: acc, }
+                    )
+            }
+            else if (pic2 == true && pic1 == false) {
+                let fffPic = userData1.IdFront;
+                setIdFront(fffPic);
+                const added2 = await client.add(file2);
+                const backPicUrl = `https://ipfs.infura.io/ipfs/${added2.path}`
+                setIdBack(backPicUrl);
+                await contractOf.methods.UpdateUserInfo(fullName, zip, dateOfBrith, userEmail, address, city,
+                    gender, religion, fffPic, backPicUrl).send(
+                        { from: acc, }
+                    )
+            }
+            else if (pic1 == true && pic2 == true) {
+                const added = await client.add(file);
+                const frontPicUrl = `https://ipfs.infura.io/ipfs/${added.path}`
+                setIdFront(frontPicUrl);
+                const added2 = await client.add(file2);
+                const backPicUrl = `https://ipfs.infura.io/ipfs/${added2.path}`
+                setIdBack(backPicUrl);
+                await contractOf.methods.UpdateUserInfo(fullName, zip, dateOfBrith, userEmail, address, city,
+                    gender, religion, frontPicUrl, backPicUrl).send(
+                        { from: acc, }
+                    )
+            }
+            else {
+                let fffPic = userData1.IdFront;
+                let backPick = userData2.IdBack;
+                setIdFront(fffPic);
+                setIdBack(backPick);
+                await contractOf.methods.UpdateUserInfo(fullName, zip, dateOfBrith, userEmail, address, city,
+                    gender, religion, fffPic, backPick).send(
+                        { from: acc, }
+                    )
+            }
             setModalShow(false);
             getDate();
 
@@ -103,31 +117,6 @@ export default function UpdateModal({ modalShow, setModalShow, getDate, userData
             console.log("error ", error);
         }
     }
-
-
-    // async function onChange(e) {
-    //     const file = e.target.files[0]
-    //     console.log(file);
-    //     try {
-    //         const added = await client.add(file)
-    //         const url = `https://ipfs.infura.io/ipfs/${added.path}`
-    //         console.log(url);
-    //         setIdFront(url)
-    //     } catch (error) {
-    //         console.log('Error uploading file: ', error)
-    //     }
-    // }
-    // async function onChange2(e) {
-    //     const file = e.target.files[0]
-    //     try {
-    //         const added = await client.add(file)
-    //         const url = `https://ipfs.infura.io/ipfs/${added.path}`
-    //         console.log(url);
-    //         setIdBack(url)
-    //     } catch (error) {
-    //         console.log('Error uploading file: ', error)
-    //     }
-    // }
     useEffect(() => {
         updatedData()
     }, []);
